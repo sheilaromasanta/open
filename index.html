@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lance</title>
+    <!-- Google Font: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e4ebe4, #d0ded1);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #intro {
+            text-align: center;
+        }
+
+        #intro h2 {
+            margin-top: 25px;
+            color: #3a5a40;
+            font-weight: 500;
+        }
+
+        /* ENVELOPE */
+        .envelope {
+            width: 260px;
+            height: 170px;
+            position: relative;
+            margin: auto;
+            cursor: pointer;
+        }
+
+        .envelopeBody {
+            position: absolute;
+            width: 100%; 
+            height: 100%;
+            background: #a3b18a;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, .12);
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 130px solid transparent;
+            border-right: 130px solid transparent;
+            border-top: 85px solid #8c9d75;
+            transform-origin: top;
+            transition: 1.2s ease;
+            z-index: 3;
+        }
+
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+        }
+
+        /* LETTER CONTAINER */
+        #letter {
+            display: none;
+            opacity: 0;
+            width: 90%;
+            max-width: 850px;
+            max-height: 85vh;
+            overflow-y: auto;
+            background: #f7f9f7;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 35px rgba(0, 0, 0, .12);
+            scroll-behavior: smooth;
+        }
+
+        .showLetter {
+            animation: showLetter 1.2s forwards;
+        }
+
+        @keyframes showLetter {
+            from {
+                opacity: 0;
+                transform: scale(.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .fadeOut {
+            animation: fadeOut 1s forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* LETTER CONTENT */
+        #letter h1 {
+            text-align: center;
+            color: #3a5a40;
+            font-weight: 600;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+
+        #typewriter {
+            white-space: pre-wrap;
+            line-height: 1.85;
+            font-size: 18px;
+            color: #27382b;
+            font-weight: 400;
+        }
+
+        .greeting {
+            font-size: 26px;
+            font-weight: 700;
+            color: #344e41;
+        }
+
+        .cursor {
+            animation: blink .8s infinite;
+            color: #588157;
+            font-weight: bold;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* SIGNATURE & END MESSAGE */
+        #signature {
+            display: none;
+            text-align: right;
+            margin-top: 40px;
+            font-size: 20px;
+            color: #344e41;
+        }
+
+        #endMessage {
+            display: none;
+            text-align: center;
+            margin-top: 35px;
+            font-size: 22px;
+            color: #3a5a40;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        #endMessage.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="music" loop>
+        <source src="abcde.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ENVELOPE INTRO -->
+    <div id="intro">
+        <div class="envelope" id="envelope" onclick="openLetter()">
+            <div class="envelopeBody"></div>
+            <div class="flap"></div>
+            <div class="envelopeLetter"></div>
+        </div>
+        <h2>Click to Open Your Letter</h2>
+    </div>
+
+    <!-- LETTER CONTAINER -->
+    <div id="letter">
+        <h1>Before you read this, I just want you to know that I've been wanting to tell you these words for a while now. And today, I finally found the courage to do so.</h1>
+        <div id="typewriter"></div>
+
+        <!-- SIGNATURE -->
+        <div id="signature">
+            <p>Sincerely,</p>
+            <strong>Shei</strong>
+        </div>
+
+        <!-- FINAL CONFESSION -->
+        <div id="endMessage">
+            I love you.
+        </div>
+    </div>
+
+    <script>
+        const letterText = `<span class="greeting">Hello, love!</span>\n\nI know we've been together only for a short time, but you've already made me feel things I never expected.\n\nI may have taken some time before giving you my answer, but I want you to know that I'm finally ready to take this chance with you.\n\nSo, my answer is yes. I want to give us a chance, get to know you even more, and see where this journey takes us.\n\nThank you for being patient with me.`;
+
+        function openLetter() {
+            const music = document.getElementById("music");
+            music.play().catch(error => {
+                console.log("Music playback was blocked by browser:", error);
+            });
+
+            const envelope = document.getElementById("envelope");
+            envelope.classList.add("open");
+
+            setTimeout(() => {
+                document.getElementById("intro").classList.add("fadeOut");
+            }, 1200);
+
+            setTimeout(() => {
+                document.getElementById("intro").style.display = "none";
+                const letter = document.getElementById("letter");
+                letter.style.display = "block";
+                letter.classList.add("showLetter");
+
+                typeWriter();
+            }, 2200);
+        }
+
+        function typeWriter() {
+            const target = document.getElementById("typewriter");
+            const letter = document.getElementById("letter");
+            let i = 0;
+
+            function type() {
+                if (i < letterText.length) {
+                    let currentSubstring = letterText.substring(0, i + 1);
+                    
+                    if (letterText[i] === '<') {
+                        i = letterText.indexOf('>', i);
+                        currentSubstring = letterText.substring(0, i + 1);
+                    }
+
+                    let displayedText = currentSubstring.replace(/\n/g, "<br>");
+                    target.innerHTML = displayedText + '<span class="cursor">|</span>';
+                    
+                    letter.scrollTop = letter.scrollHeight;
+                    
+                    i++;
+                    setTimeout(type, 25);
+                } else {
+                    target.innerHTML = letterText.replace(/\n/g, "<br>");
+
+                    // Show Signature
+                    const signature = document.getElementById("signature");
+                    signature.style.display = "block";
+                    letter.scrollTop = letter.scrollHeight;
+
+                    // Show End Message
+                    setTimeout(() => {
+                        const endMessage = document.getElementById("endMessage");
+                        endMessage.style.display = "block";
+
+                        setTimeout(() => {
+                            endMessage.classList.add("show");
+                            letter.scrollTop = letter.scrollHeight;
+                        }, 50);
+                    }, 2500);
+                }
+            }
+
+            type();
+        }
+    </script>
+</body>
+</html>
